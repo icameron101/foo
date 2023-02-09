@@ -20,12 +20,12 @@ function fetch_content {
   local day=$2
 
   local url=https://adventofcode.com/$year/day/$day
-  echo Fetching : $url
+  echo "Fetching : $url"
   local html_content=$(curl "$url")
   local name=$(echo "$html_content" | awk -v RS="---" '/Day [0-9]+:.*/')
   name="$(echo -e "${name}" | tr -d '[:space:]')"
   name="${name//:/}"
-  echo Fetching content for : $name 
+  echo "Fetching content for : $name" 
   curl -b cookies.txt -o $year$name.html "$url"
   curl -b cookies.txt -o $year$name.txt "$url/input"
 }
@@ -33,7 +33,7 @@ function fetch_content {
 
 function check_env {
 if [ -z "$ACCESS_TOKEN" ]; then
-  echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set."
+  echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set"
   exit 1
 fi
 }
