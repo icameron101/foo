@@ -1,10 +1,7 @@
 #!/bin/bash
 
 
-# Set the environment variables for the username and password
-
-#export AOC_USERNAME=icameron101@icloud.com
-#export AOC_PASSWORD=<replace-me>
+# Set the environment variables for GitHub Personal Access Token
 #export ACCESS_TOKEN=<replace-me>
 
 Usage: bash aoc_downloader.sh [year_number day_number | from_day_number to_day_number]
@@ -34,9 +31,9 @@ function fetch_content {
 
 
 function check_env {
-if [ -z "$AOC_USERNAME" ] || [ -z "$AOC_PASSWORD" ]; then
-echo "Error: AOC_USERNAME and AOC_PASSWORD environment variables must be set."
-exit 1
+if [ -z "$ACCESS_TOKEN"]; then
+  echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set."
+  exit 1
 fi
 }
 
@@ -58,7 +55,7 @@ function check_day {
   fi
 }
 
-function retrieve_single_day {
+function download_single_day {
   local year=$1
   local day=$2
 
@@ -67,7 +64,7 @@ function retrieve_single_day {
   fetch_content $year $day
 }
 
-function retrieve_range_of_days {
+function download_range_of_days {
   local year=$1
   local from_day=$2
   local to_day=$3
@@ -84,10 +81,10 @@ function retrieve_range_of_days {
   done
 }
 
-#ßcheck_env
+check_env
 if [ $# -eq 2 ]
 then
-  retrieve_single_day $1 $2
+  download_single_day $1 $2
 else
-  retrieve_range_of_days $1 $2 $3
+  download_range_of_days $1 $2 $3
 fi
