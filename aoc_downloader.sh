@@ -4,14 +4,15 @@
 # Set the environment variables for GitHub Personal Access Token
 #export ACCESS_TOKEN=<replace-me>
 
-Usage: bash aoc_downloader.sh [year_number day_number | from_day_number to_day_number]
+Usage:  aoc_downloader.sh year_number day_number 
+        aoc_downloader.sh year_number from_day_number to_day_number
  
 
 response=$(curl -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/user)
-echo $response
+echo "Response from GitHub API: $response"
 
 response=$(curl -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/#json" -X POST -d "{\"type\":\"github\"}" https://adventofcode.com/auth/github)
-echo $response
+echo "Response from Advent of Code API: $response"
 
 
 function fetch_content {
@@ -31,7 +32,7 @@ function fetch_content {
 
 
 function check_env {
-if [ -z "$ACCESS_TOKEN"]; then
+if [ -z "$ACCESS_TOKEN" ]; then
   echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set."
   exit 1
 fi
@@ -71,8 +72,8 @@ function download_range_of_days {
 
   check_year $year
   check_day $from_day
-  if [[ $to_day -eq 26 ]]; then
-    echo "to_day_number cannot be 26"
+  if [[ $to_day -gt 25 ]]; then
+    echo "to_day_number cannot be greater than 25"
     exit 1
   fi
   for day in $(seq $from_day $to_day)
@@ -82,7 +83,7 @@ function download_range_of_days {
 }
 
 check_env
-if [ $# -eq 2 ]
+if [ $# -eq 2 ] 
 then
   download_single_day $1 $2
 else
