@@ -1,22 +1,21 @@
 #!/bin/bash
 
+
 # Set the environment variables for the username and password
 
 #export AOC_USERNAME=icameron101@icloud.com
 #export AOC_PASSWORD=<replace-me>
-
+#export ACCESS_TOKEN=<replace-me>
 
 Usage: bash aoc_downloader.sh [year_number day_number | from_day_number to_day_number]
  
-#curl -c cookies.txt -d "username=$AOC_USERNAME&password=$AOC_PASSWORD" https://adventofcode.com/auth/github
-#response=$(curl -H "Authorization: token $access_token" https://api.github.com/user)
-#echo $response
-#session_id=$(grep session cookies.txt | awk '{print $7}')
-#echo $session_id
 
-access_token=“<replace-me>”
-response=$(curl -H "Authorization: Bearer $access_token" -H "Content-Type: application/json" -X POST -d "{\"type\":\"github\"}" https://adventofcode.com/auth/github)
+response=$(curl -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/user)
 echo $response
+
+response=$(curl -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/#json" -X POST -d "{\"type\":\"github\"}" https://adventofcode.com/auth/github)
+echo $response
+
 
 function fetch_content {
   local year=$1
