@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Set the environment variables for GitHub Personal Access Token
 #export ACCESS_TOKEN=<replace-me>
 
@@ -27,7 +26,8 @@ function fetch_content {
   name="${name//:/}"
   echo "Fetching content for : $name" 
   curl -b cookies.txt -o $year$name.html "$url"
-  curl -b cookies.txt -o $year$name.txt "$url/input"
+  #hardcoded session ID taken from cookie manually via browser developer mode.  This  works and retrieves all the input day files so need determine how to script it.
+  curl -b "session=53616c7465645f5fe8844c630a36a97de3141a1f7c86739072b2a74338f5f8af112496624df5765da81e2af8bfc4331820b4f9a9ccd4565c53a9ee2cf7f67f8a" -o $year$name.txt "$url/input"
 }
 
 
