@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Set the environment variables for GitHub Personal Access Token
 #export ACCESS_TOKEN=<replace-me>
 
@@ -7,7 +8,7 @@ Usage:  aoc_downloader.sh year_number day_number
         aoc_downloader.sh year_number from_day_number to_day_number
  
 
-response=$(curl -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/user)
+response=$(curl -H "Authorization: token $ACCESS_TOKEN" -c cookies.txt -D headers.txt https://api.github.com/user)
 echo "Response from GitHub API: $response"
 
 response=$(curl -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/#json" -X POST -d "{\"type\":\"github\"}" https://adventofcode.com/auth/github)
@@ -62,6 +63,7 @@ function download_single_day {
 
   check_year $year
   check_day $day
+  create_and_change_directory $year
   fetch_content $year $day
 }
 
@@ -76,13 +78,30 @@ function download_range_of_days {
     echo "to_day_number cannot be greater than 25"
     exit 1
   fi
+  create_and_change_directory $year
   for day in $(seq $from_day $to_day)
   do
     fetch_content $year $day
   done
 }
 
+create_and_change_directory() {
+  local dir_name=$1
+  if [ ! -d $dir_name ]; then
+    mkdir $dir_name || { echo "Failed to create directory $dir_name" >&2; return 1; }
+  fi
+  cd $dir_name || { echo "Failed to switch to directory $dir_name" >&2; return 1; }
+}
+
+set_base_directory() {
+  if [ -z "$base_dir" ]; then
+    base_dir=$(pwd)
+  fi
+}
+
+# MAIN 
 check_env
+set_base_directory
 if [ $# -eq 2 ] 
 then
   download_single_day $1 $2
