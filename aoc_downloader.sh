@@ -34,7 +34,8 @@ function fetch_content {
 
 function check_env {
 if [ -z "$ACCESS_TOKEN" ]; then
-  echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set"
+  echo "Error: You GitHub personal ACCESS_TOKEN environment variables must be set : 
+  https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
   exit 1
 fi
 }
@@ -63,7 +64,7 @@ function download_single_day {
 
   check_year $year
   check_day $day
-  create_and_change_directory $year
+  #create_and_change_directory $year
   fetch_content $year $day
 }
 
@@ -78,7 +79,7 @@ function download_range_of_days {
     echo "to_day_number cannot be greater than 25"
     exit 1
   fi
-  create_and_change_directory $year
+  #create_and_change_directory $year
   for day in $(seq $from_day $to_day)
   do
     fetch_content $year $day
