@@ -84,7 +84,7 @@ decrypt_and_delete_files() {
 }
 
 
-get_dir
+#get_dir
 if [ "$1" == "-e" ] || [ "$1" == "--encrypt" ]; then
   encrypt_files
 elif [ "$1" == "-ed" ] || [ "$1" == "--encrypt-and-delete" ]; then
