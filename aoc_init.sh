@@ -8,6 +8,7 @@
 
 mkdir $1
 cd $1
+//TODO use --type app or lib?
 gradle init --type java-library --dsl groovy --project-name $1 --package com.icameron101 --test-framework junit-jupiter  --incubating
 
 
