@@ -41,11 +41,11 @@ if [ $? -eq 0 ]; then
   # Make the downloaded file executable
   chmod +x aoc_input_encrypt.sh
   # Execute the script with the specified parameters, --encrypt-and-delete, 
-  ./aoc_input_encrypt.sh -ed ./lib/src/test/resources
+  #./aoc_input_encrypt.sh -ed ./lib/src/test/resources
   mv aoc_input_encrypt.sh ./lib/src/test/resources
 else
   echo "Download failed"
 fi
 
-
+gradle build
 
