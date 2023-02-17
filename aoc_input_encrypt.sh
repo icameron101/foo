@@ -5,7 +5,7 @@ ENC_EXTENSION=".enc"
 
 check_files() {
   if [ ! -f "$1" ]; then
-    echo "No .$2 files found in the directory."
+    echo "No .$2 files found in the directory, $1"
     exit 1
   fi
 }
