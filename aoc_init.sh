@@ -49,4 +49,3 @@ else
 fi
 
 gradle build
-
