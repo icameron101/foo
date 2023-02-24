@@ -1,51 +1,94 @@
 #!/bin/bash
 
-#mvn archetype:generate \
-#                "-DgroupId=com.icameron101" \
-#                "-DartifactId=$1" \
-#                "-DarchetypeArtifactId=maven-archetype-quickstart" \
-#                "-DinteractiveMode=false"
+# Usage example: ./init_java_library.sh my_project my_lib com.example 2023 1 25
 
-mkdir $1
-cd $1
-//TODO use --type app or lib?
-gradle init --type java-library --dsl groovy --project-name $1 --package com.icameron101 --test-framework junit-jupiter  --incubating
+# Function to initialize the project using Gradle init
+function initProject {
+    gradle init --type java-library --dsl groovy --project-name $1 --test-framework junit-jupiter --incubating  --package com.icameron101
+}
 
+# Function to rename the 'lib' directory to the library name
+function renameLibDir {
+    mv lib $1
+}
 
-# Download the script from GitHub using wget
-curl -O https://raw.githubusercontent.com/icameron101/foo/main/aoc_downloader.sh
+# Function to update the settings.gradle file with the new library name
+function updateSettingsGradle {
+    echo "rootProject.name = '$1'" > settings.gradle
+    echo "include '$1'" >> settings.gradle
+}
 
+# Function to update the build.gradle file with the new library name
+function updateBuildGradle {
+    sed -i "s/archivesBaseName = 'lib'/archivesBaseName = '$1'/" $1/build.gradle
+}
 
-# Check if the download was successful
-if [ $? -eq 0 ]; then
-  echo "Download successful"
-  # Make the downloaded file executable
-  chmod +x aoc_downloader.sh
-  # Execute the script with the specified parameters, year start_day, end_day
-  ./aoc_downloader.sh $2 $3 $4
-  #move files to project resources
-  mv aoc_downloader.sh ./lib/src/main/resources
-  mv *.html ./lib/src/main/resources
-  mv *.txt ./lib/src/test/resources
-  rm ./lib/src/test/resources/cookies.txt
-  rm ./lib/src/test/resources/headers.txt
-else
-  echo "Download failed"
-fi
+# Function to download a file from GitHub
+function downloadFromGitHub {
+    curl -O $1
+}
 
-# Download the script from GitHub using wget
-curl -O https://raw.githubusercontent.com/icameron101/foo/main/aoc_input_encrypt.sh
+# Function to check if the download was successful and make the downloaded file executable
+function checkDownload {
+    if [ $? -eq 0 ]; then
+        echo "Download successful"
+        chmod +x $1
+    else
+        echo "Download failed"
+    fi
+}
 
-# Check if the download was successful
-if [ $? -eq 0 ]; then
-  echo "Download successful"
-  # Make the downloaded file executable
-  chmod +x aoc_input_encrypt.sh
-  # Execute the script with the specified parameters, --encrypt-and-delete, 
-  #./aoc_input_encrypt.sh -ed ./lib/src/test/resources
-  mv aoc_input_encrypt.sh ./lib/src/test/resources
-else
-  echo "Download failed"
-fi
+# Function to move files to the project resources
+function moveFilesToResources {
+    for file in $1; do
+        mv $file ./$2
+    done
+}
 
+# Function to execute a script with specified parameters
+function executeScript {
+    ./$1 $2 $3 $4
+}
+
+# Define vars from the params
+project_name=$1
+library_name=$2
+year_number=$2
+from_day_number=$3
+to_day_number=$4
+
+# Create project
+mkdir $project_name
+cd $project_name
+
+# Initialize the java-library project using Gradle init
+initProject $project_name
+
+# Rename the 'lib' directory to the library name
+renameLibDir $library_name
+
+# Update the settings.gradle file with the new library name
+updateSettingsGradle $library_name
+
+# Update the build.gradle file with the new library name
+updateBuildGradle $library_name
+
+# Download the script from GitHub
+downloadFromGitHub https://raw.githubusercontent.com/icameron101/foo/main/aoc_downloader.sh
+
+# Check if the download was successful and execute the script with specified parameters
+checkDownload aoc_downloader.sh && executeScript aoc_downloader.sh $year_number $from_day_number $to_day_number
+
+# Download the script from GitHub
+downloadFromGitHub https://raw.githubusercontent.com/icameron101/foo/main/aoc_input_encrypt.sh
+
+# Check if the download was successful and move the script to the project resources
+checkDownload aoc_input_encrypt.sh
+#checkDownload aoc_input_encrypt.sh && executeScript aoc_input_encrypt.sh -ed
+
+# Move files to the project resources
+#moveFilesToResources '*.html' $library_name/src/main/resources
+#moveFilesToResources '*.txt *.sh' $library_name/src/test/resources
+
+# Build the project
 gradle build
